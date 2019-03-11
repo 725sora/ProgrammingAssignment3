@@ -40,15 +40,16 @@ mean_std_data <- compl_data[mean_col | std_col]
 # change to descriptive activity types
 
 activity <- compl_data[,563]
-mean_std_data <- cbind(mean_std_data, activity)
+subject <- compl_data[,562]
+mean_std_data <- cbind(mean_std_data, subject, activity)
 act_types <- read.table("activity_labels.txt")
 mean_std_data$activity <- 
   mapvalues(mean_std_data$activity, from=as.vector(act_types[,1]), 
             to=as.vector(act_types[,2]))
 
 # create 2nd data frame with means for each activity type
-meldata <- melt(mean_std_data, id="activity")
-dcast(meldata, activity ~ variable, mean)
+meldata <- melt(mean_std_data, id=c("subject", "activity"))
+dcast(meldata, activity + subject ~ variable, mean)
 
 
 }
